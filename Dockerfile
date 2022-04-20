@@ -9,7 +9,7 @@ COPY . /inference-api
 WORKDIR /inference-api/
 
 #RUN apt-get update
-RUN pip3 install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install torch==1.10.0+cu111 torchvision==0.11.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 
 #COPY ./models.tar.gz /inference-api/
 #RUN tar -zxf /inference-api/models.tar.gz --directory /inference-api
