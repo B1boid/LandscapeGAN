@@ -10,7 +10,7 @@ process = psutil.Process(os.getpid())  # for monitoring and debugging purposes
 
 config = yaml.safe_load(open("config.yml"))
 
-from LandscapeGAN.main import LandscapeGan
+from main import LandscapeGan
 landscapeGan = LandscapeGan()
 
 

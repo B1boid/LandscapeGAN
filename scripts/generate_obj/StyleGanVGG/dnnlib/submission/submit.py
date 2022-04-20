@@ -22,9 +22,7 @@ import traceback
 from enum import Enum
 
 from .. import util
-from ..util import EasyDict
 
-from . import internal
 
 class SubmitTarget(Enum):
     """The target where the function should be run.
@@ -98,7 +96,7 @@ class SubmitConfig(util.EasyDict):
         self.num_gpus = 1
         self.print_info = False
         self.nvprof = False
-        self.local = internal.local.TargetOptions()
+        self.local = scripts.generate_obj.StyleGanVGG.dnnlib.submission.internal.local.TargetOptions()
         self.datasets = []
 
         # (automatically populated)
@@ -314,7 +312,7 @@ def submit_run(submit_config: SubmitConfig, run_func_name: str, **run_func_kwarg
     submit_target = submit_config.submit_target
     farm = None
     if submit_target == SubmitTarget.LOCAL:
-        farm = internal.local.Target()
+        farm = scripts.generate_obj.StyleGanVGG.dnnlib.submission.internal.local.Target()
     assert farm is not None # unknown target
 
     # Disallow submitting jobs with zero num_gpus.
