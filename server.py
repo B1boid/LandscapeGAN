@@ -10,8 +10,31 @@ process = psutil.Process(os.getpid())  # for monitoring and debugging purposes
 
 config = yaml.safe_load(open("config.yml"))
 
+
+import torch
+def my_log(*msg):
+    print("---", *msg, flush=True)
+
+
+def get_device():
+    cuda = torch.cuda.is_available()
+    my_log(cuda)
+    device = torch.device("cuda" if cuda else "cpu")
+    if cuda:
+        current_device = torch.cuda.current_device()
+        my_log("Device:", torch.cuda.get_device_name(current_device))
+    else:
+        my_log("Device: CPU")
+    return device
+
+
+device = get_device()
+
+
 from main import LandscapeGan
 landscapeGan = LandscapeGan()
+
+my_log("INIT")
 
 
 def process_api_request(body):
