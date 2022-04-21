@@ -2,6 +2,7 @@ from mrcnn.allobj import AllobjConfig
 import tensorflow as tf
 import mrcnn.model as modellib
 import numpy as np
+from keras.backend import clear_session
 
 config = AllobjConfig()
 
@@ -21,6 +22,8 @@ class FindObjects:
       self.model = modellib.MaskRCNN(mode="inference",model_dir='',config=self.config)
     self.model.load_weights(WEIGHTS_PATH, by_name=True)
 
+    self.graph = tf.get_default_graph()
+
     self.dict2names = {
       1 : 'moon',
       2 : 'tree'
@@ -30,7 +33,8 @@ class FindObjects:
   def __call__(self, image):
     image = np.asarray(image)
     self.model.keras_model._make_predict_function()
-    results = self.model.detect([image], verbose=1)[0]
+    with self.graph.as_default():
+      results = self.model.detect([image], verbose=1)[0]
 
     all_classes = [self.dict2names[cur_class] for cur_class in results['class_ids']]
     if len(all_classes) > 0:
