@@ -43,7 +43,7 @@ class LandscapeGan:
         all_classes, all_masks = self.findObjects(input_image)
         all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
 
-        tt_image_arr,tt_image, _ = self.getBackgroundImage(new_inpaint_segm)
+        tt_image_arr, tt_image, _ = self.getBackgroundImage(new_inpaint_segm)
         tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, False)
 
         objs_dict = self.generateObjects(all_classes, tt_image)

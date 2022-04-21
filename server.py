@@ -94,9 +94,7 @@ class ApiServerController(object):
 
 
 if __name__ == '__main__':
-    my_log("Start 1")
     cherrypy.tree.mount(ApiServerController(), '/')
-    my_log("Start 2")
     cherrypy.config.update({
         'server.socket_port': config["app"]["port"],
         'server.socket_host': config["app"]["host"],
@@ -110,11 +108,8 @@ if __name__ == '__main__':
     })
 
     try:
-        my_log("Start 3")
         cherrypy.engine.start()
-        my_log("Start 4")
+        my_log("Start")
         cherrypy.engine.block()
-        my_log("Start 5")
     except KeyboardInterrupt:
-        my_log("Stop")
         cherrypy.engine.stop()
