@@ -29,6 +29,7 @@ class FindObjects:
 
   def __call__(self, image):
     image = np.asarray(image)
+    self.model.keras_model._make_predict_function()
     results = self.model.detect([image], verbose=1)[0]
 
     all_classes = [self.dict2names[cur_class] for cur_class in results['class_ids']]
