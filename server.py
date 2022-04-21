@@ -31,8 +31,8 @@ def get_device():
 device = get_device()
 
 
-# from main import LandscapeGan
-# landscapeGan = LandscapeGan()
+from main import LandscapeGan
+landscapeGan = LandscapeGan()
 
 my_log("INIT")
 
@@ -61,7 +61,7 @@ def process_api_request(body):
         warnings.append("Mode is not in: " + str(mode_allowed) + ". Mode was set to: " + mode + ".")
 
     try:
-        img_res = "res" #landscapeGan.generate(mode, image=image, tags=tags)
+        img_res = landscapeGan.generate(mode, image=image, tags=tags)
 
         result = {'result': img_res}
     except Exception as e:

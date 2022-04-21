@@ -9,9 +9,9 @@ sys.path.append("scripts/combine_images")
 
 from scripts.reference_input.GetReference import GetReference
 from scripts.segmentation_input.GetSegmentation import GetSegmentation
-#from scripts.obj_detection.FindObjects import FindObjects
+from scripts.obj_detection.FindObjects import FindObjects
 from scripts.inpaint_segmentation.InpaintObjects import InpaintObjects
-#from scripts.generate_obj.GenerateObjects import GenerateObjects
+from scripts.generate_obj.GenerateObjects import GenerateObjects
 from scripts.generate_obj.GenerateRainbow import GenerateRainbow
 from scripts.clear_obj.ClearObjects import ClearObjects
 from scripts.combine_images.CombineImages import CombineImages
@@ -22,10 +22,10 @@ class LandscapeGan:
     def __init__(self):
         self.getReference = GetReference()
         self.getSegmentation = GetSegmentation()
-        #self.findObjects = FindObjects()
+        self.findObjects = FindObjects()
         self.inpaintObjects = InpaintObjects()
         self.generateRainbow = GenerateRainbow()
-        #self.generateObjects = GenerateObjects()
+        self.generateObjects = GenerateObjects()
         self.clearObjects = ClearObjects()
         self.combineImages = CombineImages()
         print("Successful init LandscapeGan")
