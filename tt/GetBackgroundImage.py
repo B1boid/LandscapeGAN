@@ -16,7 +16,7 @@ class GetBackgroundImage:
         config_path = "tt/logs/2020-11-09T13-31-51_sflckr/configs/2020-11-09T13-31-51-project.yaml"
         self.config = OmegaConf.load(config_path)
         self.model = Net2NetTransformer(**self.config.model.params)
-        ckpt_path = "tt/logs/2020-11-09T13-31-51_sflckr/checkpoints/last.ckpt"
+        ckpt_path = "networks/tt/last.ckpt"
         sd = torch.load(ckpt_path, map_location="cpu")["state_dict"]
         self.model.load_state_dict(sd, strict=False)
         self.model.cuda().eval()
