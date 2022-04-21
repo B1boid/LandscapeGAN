@@ -94,7 +94,7 @@ class InpaintObjects:
         return Counter(points).most_common()[0][0]
   
 
-    def __call__(self, classes, masks, segmentation, method, limit_direction=None,limit_area=None, order=None, axis=None):
+    def __call__(self, classes, masks, segmentation):
       segmentation = segmentation.numpy().astype(float)
       new_classes, new_masks = [], []
       if len(masks) == 0:
@@ -114,7 +114,7 @@ class InpaintObjects:
       new_segmentation, new_inpaint_segmentation = self.inpaint_segmentation(inpaint_mask, segmentation)
           
       df = pd.DataFrame(segmentation)
-      inpaint_segmentation = df.interpolate(method=method, limit_direction=limit_direction,limit_area=limit_area,order=order, axis=axis).to_numpy()
+      inpaint_segmentation = df.interpolate(method='pad', axis=1).to_numpy()
 
       return new_classes, new_masks, segmentation, inpaint_segmentation, new_segmentation, new_inpaint_segmentation
 
