@@ -38,20 +38,51 @@ class LandscapeGan:
         if not reference_image:
             raise Exception("`Reference image` argument is None")
 
-        input_image = base64_to_pil(reference_image)
-        input_segmentation = self.getSegmentation(input_image)
+        try:
+            input_image = base64_to_pil(reference_image)
+        except Exception as e:
+            return {'input_image_error': str(e)}
+
+        try:
+            input_segmentation = self.getSegmentation(input_image)
+        except Exception as e:
+            return {'getSegmentation_error': str(e)}
+
         all_classes, all_masks = [], [] #self.findObjects(input_image)
-        all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
+        try:
+            all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
+        except Exception as e:
+            return {'inpaintObjects_error': str(e)}
 
-        tt_image_arr, tt_image, _ = self.getBackgroundImage(new_inpaint_segm)
-        tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, False)
+        try:
+            tt_image_arr, tt_image, _ = self.getBackgroundImage(new_inpaint_segm)
+        except Exception as e:
+            return {'getBackgroundImage_error': str(e)}
+        try:
+            tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, False)
+        except Exception as e:
+            return {'generateRainbow_error': str(e)}
 
-        objs_dict = self.generateObjects(all_classes, tt_image)
-        clean_objs_dict = self.clearObjects(objs_dict)
+        try:
+            objs_dict = self.generateObjects(all_classes, tt_image)
+        except Exception as e:
+            return {'generateObjects_error': str(e)}
+        try:
+            clean_objs_dict = self.clearObjects(objs_dict)
+        except Exception as e:
+            return {'clearObjects_error': str(e)}
 
-        resultImage = self.combineImages(all_classes, all_masks, new_inpaint_segm, tt_image, clean_objs_dict)
+        try:
+            resultImage = self.combineImages(all_classes, all_masks, new_inpaint_segm, tt_image, clean_objs_dict)
+        except Exception as e:
+            return {'combineImages_error': str(e)}
 
-        return pil_to_base64(resultImage)
+        try:
+            res = {"result": pil_to_base64(resultImage)}
+        except Exception as e:
+            return {'pil_to_base64_error': str(e)}
+
+        return res
 
     def generate_from_tags(self, tags):
         if not tags:

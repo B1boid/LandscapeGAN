@@ -60,12 +60,12 @@ def process_api_request(body):
         mode = mode_allowed[0]
         warnings.append("Mode is not in: " + str(mode_allowed) + ". Mode was set to: " + mode + ".")
 
-    try:
-        img_res = landscapeGan.generate(mode, image=image, tags=tags)
-
-        result = {'result': img_res}
-    except Exception as e:
-        result = {'error': str(e)}
+    #try:
+    img_res = landscapeGan.generate(mode, image=image, tags=tags)
+    result = img_res
+        #result = {'result': img_res}
+    # except Exception as e:
+    #     result = {'error': str(e)}
     if len(warnings) != 0:
         result['warnings'] = warnings
 
