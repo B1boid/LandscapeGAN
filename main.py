@@ -10,7 +10,7 @@ sys.path.append("tt")
 
 from scripts.reference_input.GetReference import GetReference
 from scripts.segmentation_input.GetSegmentation import GetSegmentation
-from scripts.obj_detection.FindObjects import FindObjects
+#from scripts.obj_detection.FindObjects import FindObjects
 from scripts.inpaint_segmentation.InpaintObjects import InpaintObjects
 from scripts.generate_obj.GenerateObjects import GenerateObjects
 from scripts.generate_obj.GenerateRainbow import GenerateRainbow
@@ -25,7 +25,7 @@ class LandscapeGan:
     def __init__(self):
         self.getReference = GetReference()
         self.getSegmentation = GetSegmentation()
-        self.findObjects = FindObjects()
+        #self.findObjects = FindObjects()
         self.inpaintObjects = InpaintObjects()
         self.getBackgroundImage = GetBackgroundImage()
         self.generateRainbow = GenerateRainbow()
@@ -40,7 +40,7 @@ class LandscapeGan:
 
         input_image = base64_to_pil(reference_image)
         input_segmentation = self.getSegmentation(input_image)
-        all_classes, all_masks = self.findObjects(input_image)
+        all_classes, all_masks = [], [] #self.findObjects(input_image)
         all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
 
         tt_image_arr, tt_image, _ = self.getBackgroundImage(new_inpaint_segm)
