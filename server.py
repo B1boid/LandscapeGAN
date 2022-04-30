@@ -1,9 +1,8 @@
 import json
 import os
-import time
 import cherrypy
-from cherrypy import log
 import yaml
+import torch
 
 import psutil
 process = psutil.Process(os.getpid())  # for monitoring and debugging purposes
@@ -11,20 +10,20 @@ process = psutil.Process(os.getpid())  # for monitoring and debugging purposes
 config = yaml.safe_load(open("config.yml"))
 
 
-import torch
-def my_log(*msg):
+
+def dev_print(*msg):
     print("---", *msg, flush=True)
 
 
 def get_device():
     cuda = torch.cuda.is_available()
-    my_log(cuda)
+    dev_print(cuda)
     device = torch.device("cuda" if cuda else "cpu")
     if cuda:
         current_device = torch.cuda.current_device()
-        my_log("Device:", torch.cuda.get_device_name(current_device))
+        dev_print("Device:", torch.cuda.get_device_name(current_device))
     else:
-        my_log("Device: CPU")
+        dev_print("Device: CPU")
     return device
 
 
@@ -34,7 +33,7 @@ device = get_device()
 from main import LandscapeGan
 landscapeGan = LandscapeGan()
 
-my_log("INIT")
+dev_print("INIT")
 
 
 def process_api_request(body):
@@ -60,12 +59,11 @@ def process_api_request(body):
         mode = mode_allowed[0]
         warnings.append("Mode is not in: " + str(mode_allowed) + ". Mode was set to: " + mode + ".")
 
-    #try:
-    img_res = landscapeGan.generate(mode, image=image, tags=tags)
-    result = img_res
-        #result = {'result': img_res}
-    # except Exception as e:
-    #     result = {'error': str(e)}
+    try:
+        img_res = landscapeGan.generate(mode, image=image, tags=tags)
+        result = {'result': img_res}
+    except Exception as e:
+        result = {'error': str(e)}
     if len(warnings) != 0:
         result['warnings'] = warnings
 
@@ -109,7 +107,7 @@ if __name__ == '__main__':
 
     try:
         cherrypy.engine.start()
-        my_log("Start")
+        dev_print("Start")
         cherrypy.engine.block()
     except KeyboardInterrupt:
         cherrypy.engine.stop()

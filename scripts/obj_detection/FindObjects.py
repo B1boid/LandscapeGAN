@@ -2,7 +2,6 @@ from mrcnn.allobj import AllobjConfig
 import tensorflow as tf
 import mrcnn.model as modellib
 import numpy as np
-from keras.backend import clear_session
 
 config = AllobjConfig()
 
