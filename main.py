@@ -10,7 +10,7 @@ sys.path.append("tt")
 
 from scripts.reference_input.GetReference import GetReference
 from scripts.segmentation_input.GetSegmentation import GetSegmentation
-#from scripts.obj_detection.FindObjects import FindObjects
+from scripts.obj_detection.FindObjects import FindObjects
 from scripts.inpaint_segmentation.InpaintObjects import InpaintObjects
 from scripts.generate_obj.GenerateObjects import GenerateObjects
 from scripts.generate_obj.GenerateRainbow import GenerateRainbow
@@ -25,7 +25,7 @@ class LandscapeGan:
     def __init__(self):
         self.getReference = GetReference()
         self.getSegmentation = GetSegmentation()
-        #self.findObjects = FindObjects()
+        self.findObjects = FindObjects()
         self.inpaintObjects = InpaintObjects()
         self.getBackgroundImage = GetBackgroundImage()
         self.generateRainbow = GenerateRainbow()
@@ -48,7 +48,7 @@ class LandscapeGan:
         except Exception as e:
             return {'getSegmentation_error': str(e)}
 
-        all_classes, all_masks = [], [] #self.findObjects(input_image)
+        all_classes, all_masks = self.findObjects(input_image)
         try:
             all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
         except Exception as e:
