@@ -16,6 +16,7 @@ from scripts.generate_obj.GenerateObjects import GenerateObjects
 from scripts.generate_obj.GenerateRainbow import GenerateRainbow
 from scripts.clear_obj.ClearObjects import ClearObjects
 from scripts.combine_images.CombineImages import CombineImages
+from scripts.request_img.RequestImage import RequestImage
 from tt.GetBackgroundImage import GetBackgroundImage
 from scripts.utils.base64 import base64_to_pil, pil_to_base64
 
@@ -32,13 +33,16 @@ class LandscapeGan:
         self.generateObjects = GenerateObjects()
         self.clearObjects = ClearObjects()
         self.combineImages = CombineImages()
+        self.requestImage = RequestImage()
         print("Successful init LandscapeGan")
 
-    def generate_from_img(self, reference_image):
+    def generate_from_img(self, reference_image, is_img_base64=True):
         if not reference_image:
             raise Exception("`Reference image` argument is None")
-
-        input_image = base64_to_pil(reference_image)
+        if is_img_base64:
+            input_image = base64_to_pil(reference_image)
+        else:
+            input_image = reference_image
         input_segmentation = self.getSegmentation(input_image)
         all_classes, all_masks = self.findObjects(input_image)
         all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
@@ -56,7 +60,8 @@ class LandscapeGan:
     def generate_from_tags(self, tags):
         if not tags:
             raise Exception("`Tags` argument is None")
-        return 'not implemented'
+        input_image = self.requestImage(tags)
+        return self.generate_from_img(input_image, is_img_base64=False)
 
     def generate(self, mode='img', **params):
         if mode == 'tags':
