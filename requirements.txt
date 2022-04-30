@@ -16,3 +16,6 @@ opencv-python==4.1.2.30
 albumentations==0.1.12
 scikit-learn==1.0.2
 pytorch_lightning==0.8.5
+tensorflow==1.15.0
+keras==2.0.8
+h5py==2.10.0
