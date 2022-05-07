@@ -25,7 +25,7 @@ class RequestImage:
             }
         }
 
-    def get_batch(self, class_name, config, img_type, limit=30):
+    def get_batch(self, class_name, config, img_type, limit=60):
         data = []
         page = 1
         while True:
@@ -46,12 +46,22 @@ class RequestImage:
         return data[:limit]
 
     def get_random_img_url(self, class_name, img_type='medium'):
-        key = random.randint(0, 30)
-        print(key)
-        if key % 2 == 0:
-            return self.get_batch(class_name, self.config['pixabay'], img_type)[key]
+        platform_mode = random.randint(0, 1)
+        if platform_mode % 2 == 0:
+            batch = self.get_batch(class_name, self.config['pixabay'], img_type)
+            if len(batch) == 0:
+                batch = self.get_batch(class_name, self.config['unsplash'], img_type)
         else:
-            return self.get_batch(class_name, self.config['unsplash'], img_type)[key]
+            batch = self.get_batch(class_name, self.config['unsplash'], img_type)
+            if len(batch) == 0:
+                batch = self.get_batch(class_name, self.config['pixabay'], img_type)
+
+        if len(batch) == 0:
+            raise Exception('Nothing found with these tags')
+
+        ind = random.randint(0, len(batch) - 1)
+        return batch[ind]
+
 
     def __call__(self, tags):
         url = self.get_random_img_url(tags)

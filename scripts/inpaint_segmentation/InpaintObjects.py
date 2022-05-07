@@ -2,33 +2,14 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 
-# 156, 106 - sky
-# 105 - cloudy sky
-
-# 149 - sand stones?
-# 134 - stones????
-# 109 - ?
-
-# 154 - water
-# 153 - beach
-
-# 123 - ground
-# 168 - tree
 
 class InpaintObjects:
 
     def __init__(self):
-      self.GARBAGE_CLASSES = {
-          0, #no label
-          1, #person
-          27, #umbrella
-          41, #board??
-          61, #chair
-          66, #table
-          7,8, #car
-          46 #glass
-      }
-      self.TREE_CLASS = 168
+        NORMAL_CLASSES = {93, 96, 105, 106, 109, 110, 111, 118, 119, 120, 123, 124, 125, 126, 127, 128, 129, 134, 135, 141, 142, 147, 148, 149, 153, 154, 156, 158, 161, 162, 168, 177, 178, 179, 181}
+        ALL_CLASSES = {i for i in range(182)}
+        self.GARBAGE_CLASSES = ALL_CLASSES.difference(NORMAL_CLASSES)
+        self.TREE_CLASS = 168
     
     def fill_more_segmemtation(self, x, y, shift, segmentation):
       if (x >= 0 and y>=0 and x<len(segmentation) and y<len(segmentation[0])):
