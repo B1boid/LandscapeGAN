@@ -11,29 +11,23 @@ config = yaml.safe_load(open("config.yml"))
 
 
 
-def dev_print(*msg):
-    print("---", *msg, flush=True)
-
-
 def get_device():
     cuda = torch.cuda.is_available()
-    dev_print(cuda)
+    print(cuda)
     device = torch.device("cuda" if cuda else "cpu")
     if cuda:
         current_device = torch.cuda.current_device()
-        dev_print("Device:", torch.cuda.get_device_name(current_device))
+        print("Device:", torch.cuda.get_device_name(current_device))
     else:
-        dev_print("Device: CPU")
+        print("Device: CPU")
     return device
 
 
 device = get_device()
 
-
 from main import LandscapeGan
 landscapeGan = LandscapeGan()
 
-dev_print("INIT")
 
 
 def process_api_request(body):
@@ -53,6 +47,9 @@ def process_api_request(body):
     # tags = "tag1 tag2 ..."
     tags = body.get('tags')
 
+    # need_tt = True/False
+    need_tt = body.get('need_tt')
+
     warnings = []
     mode_allowed = ["image", "tags"]
     if mode not in mode_allowed:
@@ -60,8 +57,7 @@ def process_api_request(body):
         warnings.append("Mode is not in: " + str(mode_allowed) + ". Mode was set to: " + mode + ".")
 
     try:
-        img_res = landscapeGan.generate(mode, image=image, tags=tags)
-        result = {'result': img_res}
+        result = landscapeGan.generate(mode, image=image, tags=tags, need_tt=need_tt)
     except Exception as e:
         result = {'error': str(e)}
     if len(warnings) != 0:
@@ -107,7 +103,7 @@ if __name__ == '__main__':
 
     try:
         cherrypy.engine.start()
-        dev_print("Start")
+        print("Start")
         cherrypy.engine.block()
     except KeyboardInterrupt:
         cherrypy.engine.stop()
