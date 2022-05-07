@@ -57,6 +57,7 @@ class LandscapeGan:
             else:
                 _, original_tt_image, _ = self.getBackgroundImage(input_segmentation)
             result['tt_image'] = pil_to_base64(original_tt_image)
+            result['input_image'] = pil_to_base64(input_image)
 
         tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, False)
 
