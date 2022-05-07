@@ -38,36 +38,40 @@ class LandscapeGan:
         print("Successful init LandscapeGan")
 
     def generate_from_img(self, reference_image, need_tt, is_img_base64=True):
-        result = {}
         if not reference_image:
             raise Exception("`Reference image` argument is None")
         if is_img_base64:
             input_image = base64_to_pil(reference_image)
         else:
             input_image = reference_image
-        input_segmentation = self.getSegmentation(input_image)
-        all_classes, all_masks = self.findObjects(input_image)
-        all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
+        try:
+            result = {}
+            input_segmentation = self.getSegmentation(input_image)
+            all_classes, all_masks = self.findObjects(input_image)
+            all_classes, all_masks, _, _, _, new_inpaint_segm = self.inpaintObjects(all_classes, all_masks, input_segmentation)
 
-        tt_image_arr, tt_image, _ = self.getBackgroundImage(new_inpaint_segm)
+            tt_image_arr, tt_image, _ = self.getBackgroundImage(new_inpaint_segm)
 
-        if need_tt:
-            if np.array_equal(np.array(new_inpaint_segm).astype(int), np.array(input_segmentation).astype(int)):
-                original_tt_image = tt_image.copy()
-            else:
-                _, original_tt_image, _ = self.getBackgroundImage(input_segmentation)
-            result['tt_image'] = pil_to_base64(original_tt_image)
-            result['input_image'] = pil_to_base64(input_image)
+            if need_tt:
+                if np.array_equal(np.array(new_inpaint_segm).astype(int), np.array(input_segmentation).astype(int)):
+                    original_tt_image = tt_image.copy()
+                else:
+                    _, original_tt_image, _ = self.getBackgroundImage(input_segmentation)
+                result['tt_image'] = pil_to_base64(original_tt_image)
+                result['input_image'] = pil_to_base64(input_image)
 
-        tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, False)
+            tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, False)
 
-        objs_dict = self.generateObjects(all_classes, tt_image)
-        clean_objs_dict = self.clearObjects(objs_dict)
+            objs_dict = self.generateObjects(all_classes, tt_image)
+            clean_objs_dict = self.clearObjects(objs_dict)
 
-        resultImage = self.combineImages(all_classes, all_masks, new_inpaint_segm, tt_image, clean_objs_dict)
+            resultImage = self.combineImages(all_classes, all_masks, new_inpaint_segm, tt_image, clean_objs_dict)
+    
+            result['result'] = pil_to_base64(resultImage)
+            return result
+        except Exception as e:
+            return {'error': str(e), 'imput_image': input_image}
 
-        result['result'] = pil_to_base64(resultImage)
-        return result
 
     def generate_from_tags(self, tags, need_tt):
         if not tags:
