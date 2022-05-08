@@ -6,7 +6,7 @@ from collections import Counter
 class InpaintObjects:
 
     def __init__(self):
-        NORMAL_CLASSES = {93, 96, 105, 106, 109, 110, 111, 118, 119, 120, 123, 124, 125, 126, 127, 128, 129, 134, 135, 141, 142, 147, 148, 149, 153, 154, 156, 158, 161, 162, 168, 177, 178, 179, 181}
+        NORMAL_CLASSES = {93, 96, 105, 106, 109, 110, 111, 118, 119, 120, 123, 124, 125, 126, 127,128, 129, 133, 134, 135, 141, 142, 147, 148, 149, 153, 154, 156, 158, 159, 161, 162, 168, 177, 178, 179, 181}
         ALL_CLASSES = {i for i in range(182)}
         self.GARBAGE_CLASSES = ALL_CLASSES.difference(NORMAL_CLASSES)
         self.TREE_CLASS = 168
@@ -67,6 +67,14 @@ class InpaintObjects:
 
       return new_segmentation, new_inpaint_segmentation
 
+    def is_beach(self, segmentation):
+        beach = {153, 149}
+        stats = Counter(np.array(segmentation).flatten()).most_common()[:4]
+        for pixel_stat in stats[:4]:
+          if pixel_stat[0] in beach:
+              return True
+        return False
+
     def get_most_common_in_mask(self, segmentation, mask):
         data = np.ma.masked_array(segmentation, ~mask)
         return self.get_most_common(data[data.mask == False].data)
@@ -83,8 +91,9 @@ class InpaintObjects:
          return new_classes, new_masks, new_segmentation, new_inpaint_segmentation, new_segmentation, new_inpaint_segmentation
       inpaint_mask = np.ones_like(masks[0])
 
+      is_beach = self.is_beach(segmentation)
       for i in range(len(masks)):
-        if classes[i] != 'tree' or self.get_most_common_in_mask(segmentation, masks[i]) == self.TREE_CLASS:
+        if not is_beach and (classes[i] != 'tree' or self.get_most_common_in_mask(segmentation, masks[i]) == self.TREE_CLASS):
           new_classes.append(classes[i])
           new_masks.append(masks[i])
 

@@ -8,7 +8,6 @@ class CombineImages:
 
 
     def corners(self, np_array):
-        max_values = np.amax(np_array)
         result = np.where(np_array == np.amax(np_array))
         top = np.min(result[0])
         bottom = np.max(result[0])
@@ -40,7 +39,7 @@ class CombineImages:
         for i, obj_key in enumerate(all_classes):
             shift = 0
             if obj_key == 'tree':
-                shift = 10
+                shift = 25
             ind_dict[obj_key] = ind_dict.get(obj_key, -1) + 1
             corners_vals = self.corners(all_masks[i])
             cur_obj = clean_objs_dict[obj_key][ind_dict[obj_key]]

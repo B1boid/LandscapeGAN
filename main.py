@@ -8,7 +8,6 @@ sys.path.append("scripts/generate_obj")
 sys.path.append("scripts/combine_images")
 sys.path.append("tt")
 
-from scripts.reference_input.GetReference import GetReference
 from scripts.segmentation_input.GetSegmentation import GetSegmentation
 from scripts.obj_detection.FindObjects import FindObjects
 from scripts.inpaint_segmentation.InpaintObjects import InpaintObjects
@@ -25,7 +24,6 @@ import numpy as np
 class LandscapeGan:
 
     def __init__(self):
-        self.getReference = GetReference()
         self.getSegmentation = GetSegmentation()
         self.findObjects = FindObjects()
         self.inpaintObjects = InpaintObjects()
@@ -37,7 +35,7 @@ class LandscapeGan:
         self.requestImage = RequestImage()
         print("Successful init LandscapeGan")
 
-    def generate_from_img(self, reference_image, need_tt, is_img_base64=True):
+    def generate_from_img(self, reference_image, need_tt, items, is_img_base64=True):
         if not reference_image:
             raise Exception("`Reference image` argument is None")
         if is_img_base64:
@@ -60,13 +58,13 @@ class LandscapeGan:
                 result['tt_image'] = pil_to_base64(original_tt_image)
                 result['input_image'] = pil_to_base64(input_image)
 
-            tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, False)
+            tt_image = self.generateRainbow(tt_image, tt_image_arr, new_inpaint_segm, 'rainbow' in items)
 
             objs_dict = self.generateObjects(all_classes, tt_image)
             clean_objs_dict = self.clearObjects(objs_dict)
 
             resultImage = self.combineImages(all_classes, all_masks, new_inpaint_segm, tt_image, clean_objs_dict)
-    
+
             result['result'] = pil_to_base64(resultImage)
             return result
         except Exception as e:
@@ -76,10 +74,10 @@ class LandscapeGan:
     def generate_from_tags(self, tags, need_tt):
         if not tags:
             raise Exception("`Tags` argument is None")
-        input_image = self.requestImage(tags)
-        return self.generate_from_img(input_image, need_tt, is_img_base64=False)
+        input_image, items = self.requestImage(tags)
+        return self.generate_from_img(input_image, need_tt, items, is_img_base64=False)
 
     def generate(self, mode='img', **params):
         if mode == 'tags':
             return self.generate_from_tags(params.get(mode), params.get('need_tt'))
-        return self.generate_from_img(params.get(mode), params.get('need_tt'))
+        return self.generate_from_img(params.get(mode), params.get('need_tt'), {})

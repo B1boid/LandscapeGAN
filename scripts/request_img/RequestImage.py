@@ -62,7 +62,12 @@ class RequestImage:
         ind = random.randint(0, len(batch) - 1)
         return batch[ind]
 
+    def extract_special_items(self, tags):
+        items = set()
+        if 'rainbow' in tags:
+            items.add('rainbow')
+        return items
 
     def __call__(self, tags):
         url = self.get_random_img_url(tags)
-        return Image.open(requests.get(url, stream=True).raw)
+        return Image.open(requests.get(url, stream=True).raw), self.extract_special_items(tags)
