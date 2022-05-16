@@ -9,8 +9,6 @@ process = psutil.Process(os.getpid())  # for monitoring and debugging purposes
 
 config = yaml.safe_load(open("config.yml"))
 
-
-
 def get_device():
     cuda = torch.cuda.is_available()
     print(cuda)
@@ -21,7 +19,6 @@ def get_device():
     else:
         print("Device: CPU")
     return device
-
 
 device = get_device()
 

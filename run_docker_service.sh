@@ -1,1 +1,1 @@
-docker run --rm --gpus 1 -p 5001:5001 generate-landscape-service
+docker run --rm --gpus 1 -p 9010:9010 generate-landscape-service

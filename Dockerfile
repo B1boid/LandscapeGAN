@@ -2,7 +2,7 @@ FROM python:3.7
 
 ENV PYTHONUNBUFFERED 1
 
-EXPOSE 5001
+EXPOSE 9010
 
 
 COPY . /inference-api
