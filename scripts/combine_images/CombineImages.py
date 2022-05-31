@@ -8,6 +8,8 @@ class CombineImages:
 
 
     def corners(self, np_array):
+        if len(np_array) == 4:
+            return np_array[0], np_array[1], np_array[2],np_array[3]
         result = np.where(np_array == np.amax(np_array))
         top = np.min(result[0])
         bottom = np.max(result[0])
